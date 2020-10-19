@@ -1,7 +1,6 @@
 package flagparser
 
 import (
-	"fmt"
 	"reflect"
 	"sort"
 	"strconv"
@@ -31,38 +30,45 @@ func (parser *FlagParser) Parse(in []string) (map[string]interface{}, error) {
 	for _, arg := range parser.Flags {
 		switch arg.Type {
 		case "int":
-			out[arg.Flag] = 0
+			out[arg.Flags[0]] = 0
 		case "string":
-			out[arg.Flag] = ""
+			out[arg.Flags[0]] = ""
 		case "duration":
 			duration, _ := time.ParseDuration("876600h")
-			out[arg.Flag] = duration
+			out[arg.Flags[0]] = duration
+		case "bool":
+			out[arg.Flags[0]] = false
 		}
 	}
 
 	for i, arg := range in {
-		fmt.Println(i)
-		if len(in) > i+1 && strings.HasPrefix(arg, "-") {
+		if strings.HasPrefix(arg, "-") {
 			arg = strings.TrimPrefix(arg, "-")
 			for _, flag := range parser.Flags {
-				if arg == flag.Flag {
-					fmt.Println(arg, i, flag.Type)
-					option, err := flag.parse(in[i+1])
-					if err != nil {
-						return out, err
+				var matched bool
+				for _, flagName := range flag.Flags {
+					if arg == flagName {
+						matched = true
 					}
-					fmt.Printf("%v => %T, %v\n", flag.Flag, option, option)
-					switch option.(type) {
-					case int, int64:
-						out[flag.Flag] = option.(int64)
-					case time.Duration:
-						out[flag.Flag] = option.(time.Duration)
-					case bool:
-						out[flag.Flag] = option.(bool)
-					default:
-						out[flag.Flag] = option.(string)
+				}
+				if matched {
+					if flag.Type == "bool" {
+						out[flag.Flags[0]] = true
+					} else {
+						option, err := flag.parse(in[i+1])
+						if err != nil {
+							return out, err
+						}
+						switch option.(type) {
+						case int, int64:
+							out[flag.Flags[0]] = option.(int64)
+						case time.Duration:
+							out[flag.Flags[0]] = option.(time.Duration)
+						default:
+							out[flag.Flags[0]] = option.(string)
+						}
+						itemsToRemove = append(itemsToRemove, i, i+1)
 					}
-					itemsToRemove = append(itemsToRemove, i, i+1)
 				}
 			}
 		}

@@ -7,8 +7,8 @@ type FlagParser struct {
 
 // Flag is a single flag, meant to be used in FlagParser
 type Flag struct {
-	Flag string
-	Type string
+	Flags []string
+	Type  string
 }
 
 // NewFlagParser returns a new FlagParser instance
@@ -20,33 +20,33 @@ func NewFlagParser(flags ...*Flag) (parser *FlagParser, err error) {
 }
 
 // Int returns an int parser
-func Int(flag string) *Flag {
+func Int(flags ...string) *Flag {
 	return &Flag{
-		Flag: flag,
-		Type: "int",
+		Flags: flags,
+		Type:  "int",
 	}
 }
 
 // String returns a string parser
-func String(flag string) *Flag {
+func String(flags ...string) *Flag {
 	return &Flag{
-		Flag: flag,
-		Type: "string",
+		Flags: flags,
+		Type:  "string",
 	}
 }
 
 // Duration returns a duration parser
-func Duration(flag string) *Flag {
+func Duration(flags ...string) *Flag {
 	return &Flag{
-		Flag: flag,
-		Type: "duration",
+		Flags: flags,
+		Type:  "duration",
 	}
 }
 
 // Bool returns a bool parser
-func Bool(flag string) *Flag {
+func Bool(flags ...string) *Flag {
 	return &Flag{
-		Flag: flag,
-		Type: "bool",
+		Flags: flags,
+		Type:  "bool",
 	}
 }
