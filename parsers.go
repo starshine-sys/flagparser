@@ -16,7 +16,7 @@ func (flag *Flag) parse(in string) (out interface{}, err error) {
 	case "int":
 		out, err = strconv.ParseInt(in, 0, 0)
 	case "duration":
-		out, err = time.ParseDuration(in)
+		out, err = parseDuration(in)
 	}
 	return out, err
 }
@@ -84,8 +84,7 @@ func (parser *FlagParser) Parse(in []string) (map[string]interface{}, error) {
 }
 
 func removeFromSlice(s []string, i int) []string {
-	s[i] = s[len(s)-1]
-	return s[:len(s)-1]
+	return append(s[:i], s[i+1:]...)
 }
 
 func reverseAny(s interface{}) {
