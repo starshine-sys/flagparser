@@ -50,6 +50,7 @@ func (parser *FlagParser) Parse(in []string) (map[string]interface{}, error) {
 					if arg == flagName {
 						matched = true
 					}
+					itemsToRemove = append(itemsToRemove, i)
 				}
 				if matched {
 					if flag.Type == "bool" {
