@@ -1,4 +1,4 @@
-module github.com/Starshine113/flagparser
+module github.com/starshine-sys/flagparser
 
 go 1.15
 
